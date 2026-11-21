@@ -252,8 +252,11 @@
             source = validated-config-for pkgs cfg.package cfg.finalConfigFile;
           };
 
+          # config.home.packages = nixpkgs.lib.optionals (cfg.settings.xwayland-satellite.enable == true) [ pkgs.xwayland-satellite ]; 
+
           disabledModules = [ "services/window-managers/niri.nix" ];
         };
+
       nixosModules.binary-cache = ./modules/binary-cache.nix;
       nixosModules.niri =
         {
@@ -361,7 +364,7 @@
           };
 
           config = nixpkgs.lib.mkIf cfg.enable {
-            home.packages = [ cfg.package ];
+            home.packages = [ cfg.package ] ++ nixpkgs.lib.optionals cfg.settings.xwayland-satellite.enable [ pkgs.xwayland-satellite];
             services.gnome-keyring.enable = true;
             xdg.portal = {
               enable = true;
